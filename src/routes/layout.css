@@ -1,0 +1,479 @@
+@import 'tailwindcss';
+
+/* ────────────────────────────────────────────────────────────────────────────
+   NOVUS LINK SOCIO — DESIGN TOKENS
+   Source of truth: novuslinksocio.com (live CSS + logo SVG) and the
+   "Product Range" / "Card Templates" brochures (Google Drive PDFs).
+
+   VERIFIED (exact hex in shipped code / SVG)
+     #26004A  Novus Night   – live site background + logo gradient end  → PRIMARY brand violet
+     #190030  Novus Abyss   – logo gradient start
+     #2D004A  Novus Dusk    – live site gradient end
+     #FF4986  Signal Pink   – every CTA button on the live site
+   SAMPLED (pixel-sampled from the brochure renders, ±2 per channel)
+     #4A0095  Novus Violet  – wordmark + headline colour in both brochures
+     #1D0030  Metal Night   – background of the metal-card brochure page
+     #3D3D3D  Brochure ink  – body copy on light brochure pages
+     #2E7E39  SymphoZen     – parent brand ("From SymphoZen Labs") – attribution only
+   DERIVED (same 270° hue as Novus Violet, for tints / states / text-on-dark)
+     violet-600…50 below.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+	/* Brand violets */
+	--color-abyss: #190030; /* verified */
+	--color-night: #26004a; /* verified · primary */
+	--color-dusk: #2d004a; /* verified */
+	--color-metal-night: #1d0030; /* sampled */
+
+	--color-violet-950: #190030;
+	--color-violet-900: #26004a;
+	--color-violet-800: #36006b; /* derived · surfaces between night & brand */
+	--color-violet-700: #4a0095; /* sampled · brand violet (wordmark) */
+	--color-violet-600: #6b15c1; /* derived · hover on light, glows */
+	--color-violet-500: #8f3be3; /* derived · focus rings, borders on dark */
+	--color-violet-400: #b371f3; /* derived · highlights / links on dark (6.0:1 on abyss) */
+	--color-violet-300: #d1a8fa; /* derived · emphasis text on dark */
+	--color-violet-200: #e6cdfe; /* derived */
+	--color-violet-100: #f4e8ff; /* derived · light surface tint */
+	--color-violet-50: #faf5ff; /* derived */
+
+	/* Signal pink — the live site's CTA colour. Dark ink on pink = 6.0:1 (AA).
+	   White on pink is only 3.2:1, so pink buttons always use abyss text. */
+	--color-signal: #ff4986; /* verified */
+	--color-signal-hover: #ff6b9d; /* derived */
+	--color-signal-press: #e63572; /* derived */
+	--color-signal-soft: #ff498626;
+
+	/* Neutrals tuned to the violet hue */
+	--color-ink: #f6f1fb; /* primary text on dark (17.4:1 on abyss) */
+	--color-ink-muted: #bfaed3; /* secondary text on dark (9.4:1 abyss · 8.6:1 night) */
+	--color-ink-subtle: #8e7ba6; /* meta text on dark (5.1:1 abyss · 4.7:1 night) */
+	--color-line: #ffffff1f; /* hairlines on dark */
+	--color-line-strong: #ffffff38;
+	--color-paper: #f7f3fb; /* light section surface */
+	--color-paper-ink: #1f1030; /* text on paper (16.3:1) */
+	--color-paper-muted: #5a4a6e; /* secondary text on paper (7.3:1) */
+	--color-paper-line: #1f10301a;
+	--color-brochure-ink: #3d3d3d; /* sampled */
+
+	/* Semantic */
+	--color-success: #3ccf86; /* on dark 9.6:1 */
+	--color-success-ink: #126b40; /* on paper */
+	--color-warning: #f5b544;
+	--color-error: #ff8a80; /* on dark 8.5:1 — distinct hue from signal pink */
+	--color-error-ink: #b42318;
+
+	/* Parent brand — attribution only */
+	--color-symphozen: #2e7e39;
+
+	/* Material colours for metal products (product rendering, not UI) */
+	--color-silver: #c9ced6;
+	--color-rose: #e3ad98;
+	--color-gold: #d6bf74;
+
+	--font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+	--animate-rise: rise 1.1s var(--ease-out-expo) both;
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translateY(0.6em);
+			filter: blur(8px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+			/* `none`, not blur(0): a filter left on an ancestor stops glass inside
+			   it from seeing (and blurring) what is behind. */
+			filter: none;
+		}
+	}
+}
+
+@layer base {
+	:root {
+		color-scheme: dark;
+		--gutter: clamp(1rem, 4vw, 3rem);
+		--header-h: 4.25rem;
+	}
+
+	html {
+		background: var(--color-abyss);
+		-webkit-text-size-adjust: 100%;
+		scroll-padding-top: calc(var(--header-h) + 1rem);
+	}
+
+	body {
+		background: var(--color-abyss);
+		color: var(--color-ink);
+		font-family: var(--font-sans);
+		font-feature-settings: 'ss01', 'cv11';
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+		overflow-x: clip;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(--font-display);
+		font-weight: 600;
+		letter-spacing: -0.03em;
+		line-height: 0.95;
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
+	::selection {
+		background: var(--color-signal);
+		color: var(--color-abyss);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-violet-400);
+		outline-offset: 3px;
+		border-radius: 6px;
+	}
+
+	.on-paper :focus-visible {
+		outline-color: var(--color-violet-700);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
+}
+
+@layer components {
+	.container-x {
+		width: 100%;
+		max-width: 88rem;
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+	}
+
+	.eyebrow {
+		font-family: var(--font-sans);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--color-violet-300);
+	}
+
+	.on-paper .eyebrow {
+		color: var(--color-violet-700);
+	}
+
+	.serif-accent {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-weight: 400;
+		letter-spacing: -0.01em;
+	}
+
+	/* Film grain — static SVG noise, no animation cost. */
+	.grain::after {
+		content: '';
+		position: fixed;
+		inset: 0;
+		z-index: 60;
+		pointer-events: none;
+		opacity: 0.07;
+		mix-blend-mode: overlay;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	}
+
+	.text-gradient-violet {
+		background: linear-gradient(
+			100deg,
+			var(--color-violet-200) 0%,
+			var(--color-violet-400) 55%,
+			var(--color-signal) 120%
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	/* Reveal-on-scroll (see #lib/actions/reveal.ts). Without JS, content stays visible. */
+	.js [data-reveal] {
+		opacity: 0;
+		transform: translateY(28px);
+		transition:
+			opacity 0.9s var(--ease-out-expo),
+			transform 1.1s var(--ease-out-expo);
+		transition-delay: calc(var(--reveal-i, 0) * 70ms);
+	}
+	.js [data-reveal].is-in {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* ───────── Liquid glass ─────────
+	   .glass        frosted surface: blur + saturation, a lit rim, a pointer-following
+	                 specular (--lx/--ly, set in +layout.svelte), depth shadows.
+	   .lens         thicker glass for the big surfaces (header, plan cards, panels):
+	                 heavier frost and colour lift. (An SVG-filter refraction was tried
+	                 here; Chrome drops the whole backdrop-filter when it is present.)
+	   .glass-deep   violet-tinted glass for panels that sit on light paper.
+	   .liquid-pill  glossy solid pill (CTA buttons): top sheen, inner shade, glow.
+	   .glass-input  form fields: recessed glass well.
+	   Utilities still win, so `bg-*` on a glass element adds a tint. */
+	.glass {
+		position: relative;
+		isolation: isolate;
+		background-color: rgb(255 255 255 / 0.025);
+		background-image: linear-gradient(
+			155deg,
+			rgb(255 255 255 / 0.13) 0%,
+			rgb(255 255 255 / 0.04) 36%,
+			rgb(255 255 255 / 0.015) 64%,
+			rgb(209 168 250 / 0.09) 100%
+		);
+		-webkit-backdrop-filter: blur(22px) saturate(185%) brightness(1.06);
+		backdrop-filter: blur(22px) saturate(185%) brightness(1.06);
+		box-shadow:
+			inset 0 1px 0.5px rgb(255 255 255 / 0.34),
+			inset 0 -1px 0.5px rgb(255 255 255 / 0.07),
+			inset 0 0 24px -6px rgb(255 255 255 / 0.12),
+			inset 0 -18px 30px -24px rgb(179 113 243 / 0.35),
+			0 1px 1px rgb(0 0 0 / 0.25),
+			0 26px 60px -30px rgb(6 0 16 / 0.95);
+		transition:
+			box-shadow 0.4s var(--ease-out-expo),
+			background-color 0.4s;
+	}
+	/* Rim: a 1px gradient stroke, bright where the light falls, cool on the far edge. */
+	.glass::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		padding: 1px;
+		border-radius: inherit;
+		pointer-events: none;
+		background: linear-gradient(
+			140deg,
+			rgb(255 255 255 / 0.6),
+			rgb(255 255 255 / 0.1) 28%,
+			rgb(255 255 255 / 0.03) 55%,
+			rgb(209 168 250 / 0.4) 100%
+		);
+		-webkit-mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		mask:
+			linear-gradient(#000 0 0) content-box,
+			linear-gradient(#000 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+	}
+	/* Specular: a soft light that follows the pointer across the surface. */
+	.glass::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		border-radius: inherit;
+		pointer-events: none;
+		background: radial-gradient(
+			28rem circle at var(--lx, 22%) var(--ly, 0%),
+			rgb(255 255 255 / 0.13),
+			rgb(209 168 250 / 0.05) 35%,
+			transparent 60%
+		);
+		opacity: 0.55;
+		transition: opacity 0.5s var(--ease-out-expo);
+	}
+	.glass:hover::after,
+	.glass:focus-within::after {
+		opacity: 1;
+	}
+	.glass:hover {
+		box-shadow:
+			inset 0 1px 0.5px rgb(255 255 255 / 0.45),
+			inset 0 -1px 0.5px rgb(255 255 255 / 0.1),
+			inset 0 0 28px -6px rgb(255 255 255 / 0.16),
+			inset 0 -18px 30px -24px rgb(179 113 243 / 0.5),
+			0 1px 1px rgb(0 0 0 / 0.25),
+			0 30px 70px -30px rgb(74 0 149 / 0.9);
+	}
+
+	.lens {
+		-webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.08);
+		backdrop-filter: blur(28px) saturate(200%) brightness(1.08);
+	}
+
+	.glass-deep {
+		background-color: rgb(38 0 74 / 0.86);
+		background-image:
+			radial-gradient(70% 90% at 0% 0%, rgb(143 59 227 / 0.35), transparent 60%),
+			radial-gradient(60% 80% at 100% 100%, rgb(255 73 134 / 0.14), transparent 60%);
+	}
+
+	.liquid-pill {
+		background-image:
+			linear-gradient(
+				180deg,
+				rgb(255 255 255 / 0.32),
+				rgb(255 255 255 / 0.06) 48%,
+				transparent 52%
+			),
+			radial-gradient(120% 80% at 50% 120%, rgb(255 255 255 / 0.22), transparent 60%);
+		box-shadow:
+			inset 0 1px 1px rgb(255 255 255 / 0.6),
+			inset 0 -2px 6px rgb(40 0 30 / 0.3),
+			inset 0 0 0 1px rgb(255 255 255 / 0.12),
+			0 12px 36px -12px var(--pill-glow, var(--color-signal));
+	}
+	.liquid-pill:hover {
+		box-shadow:
+			inset 0 1px 1px rgb(255 255 255 / 0.7),
+			inset 0 -2px 6px rgb(40 0 30 / 0.3),
+			inset 0 0 0 1px rgb(255 255 255 / 0.18),
+			0 16px 46px -10px var(--pill-glow, var(--color-signal));
+	}
+
+	.glass-input {
+		background-color: rgb(255 255 255 / 0.035);
+		background-image: linear-gradient(180deg, rgb(0 0 0 / 0.12), transparent 40%);
+		-webkit-backdrop-filter: blur(12px) saturate(160%);
+		backdrop-filter: blur(12px) saturate(160%);
+		box-shadow:
+			inset 0 1px 2px rgb(0 0 0 / 0.35),
+			inset 0 -1px 0 rgb(255 255 255 / 0.08);
+	}
+	/* Dropdowns: the chevron rides on top of the glass gradient. */
+	select.glass-input {
+		background-image:
+			url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d1a8fa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"),
+			linear-gradient(180deg, rgb(0 0 0 / 0.12), transparent 40%);
+		background-repeat: no-repeat;
+		background-position:
+			right 1rem center,
+			0 0;
+		background-size: 1.1rem, auto;
+	}
+	.glass-input:focus {
+		box-shadow:
+			inset 0 1px 2px rgb(0 0 0 / 0.35),
+			inset 0 -1px 0 rgb(255 255 255 / 0.12),
+			0 0 0 4px rgb(143 59 227 / 0.22);
+	}
+
+	/* Slow-drifting colour behind the page, so the glass always has light to bend. */
+	.ambient-fixed {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		overflow: hidden;
+		pointer-events: none;
+	}
+	.ambient-fixed i {
+		position: absolute;
+		width: 62vmax;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: radial-gradient(closest-side, var(--c), transparent);
+		will-change: transform;
+		animation: orb var(--d, 40s) ease-in-out infinite alternate;
+	}
+	.ambient-fixed i:nth-child(1) {
+		--c: rgb(107 21 193 / 0.38);
+		top: -22vmax;
+		left: -14vmax;
+	}
+	.ambient-fixed i:nth-child(2) {
+		--c: rgb(255 73 134 / 0.14);
+		--d: 52s;
+		top: 30vh;
+		right: -26vmax;
+		animation-direction: alternate-reverse;
+	}
+	.ambient-fixed i:nth-child(3) {
+		--c: rgb(74 0 149 / 0.5);
+		--d: 46s;
+		bottom: -30vmax;
+		left: 20vw;
+	}
+	@keyframes orb {
+		to {
+			transform: translate3d(14vw, 10vh, 0) scale(1.18);
+		}
+	}
+	/* The same light for opaque sections (which hide the fixed layer). */
+	.ambient {
+		isolation: isolate;
+	}
+	.ambient::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		border-radius: inherit;
+		pointer-events: none;
+		background:
+			radial-gradient(40% 35% at 88% 18%, rgb(143 59 227 / 0.3), transparent 70%),
+			radial-gradient(32% 30% at 8% 72%, rgb(255 73 134 / 0.12), transparent 70%),
+			radial-gradient(44% 30% at 60% 72%, rgb(74 0 149 / 0.45), transparent 70%);
+	}
+
+	@media (prefers-reduced-transparency: reduce) {
+		.glass,
+		.glass-input {
+			-webkit-backdrop-filter: none !important;
+			backdrop-filter: none !important;
+			background-color: rgb(38 0 74 / 0.95);
+		}
+	}
+
+	.sr-only-focusable:not(:focus):not(:focus-within) {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+}
+
+/* Cross-page view transitions (progressive enhancement). */
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root) {
+		animation: 280ms var(--ease-in-out-quint) both vt-out;
+	}
+	::view-transition-new(root) {
+		animation: 520ms var(--ease-out-expo) both vt-in;
+	}
+}
+@keyframes vt-out {
+	to {
+		opacity: 0;
+		transform: scale(0.985);
+		filter: blur(6px);
+	}
+}
+@keyframes vt-in {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+}
